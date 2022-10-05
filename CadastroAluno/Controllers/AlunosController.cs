@@ -7,34 +7,34 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CadastroAluno.Data;
 using CadastroAluno.Models;
+using CadastroAluno.Contracts;
 
 namespace CadastroAluno.Controllers
 {
     public class AlunosController : Controller
     {
-        private readonly CadastroAlunoContext _context;
+        private readonly IAlunosRepository _context;
 
-        public AlunosController(CadastroAlunoContext context)
+        public AlunosController(IAlunosRepository context)
         {
             _context = context;
         }
 
         // GET: Alunos
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Alunos.ToListAsync());
+            return View(_context.GetAlunos());
         }
 
         // GET: Alunos/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var alunos = await _context.Alunos
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var alunos = _context.GetAlunoById(id);
             if (alunos == null)
             {
                 return NotFound();
@@ -54,26 +54,26 @@ namespace CadastroAluno.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Turma,Media")] Alunos alunos)
+        public IActionResult Create([Bind("Id,Nome,Turma,Media")] Alunos alunos)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(alunos);
-                await _context.SaveChangesAsync();
+                _context.AddAluno(alunos);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(alunos);
         }
 
         // GET: Alunos/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var alunos = await _context.Alunos.FindAsync(id);
+            var alunos = _context.GetAlunoById(id);
             if (alunos == null)
             {
                 return NotFound();
@@ -86,7 +86,7 @@ namespace CadastroAluno.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Turma,Media")] Alunos alunos)
+        public IActionResult Edit(int id, [Bind("Id,Nome,Turma,Media")] Alunos alunos)
         {
             if (id != alunos.Id)
             {
@@ -95,37 +95,22 @@ namespace CadastroAluno.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(alunos);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AlunosExists(alunos.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.UpdateAluno(id, alunos);
                 return RedirectToAction(nameof(Index));
             }
+
             return View(alunos);
         }
 
         // GET: Alunos/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var alunos = await _context.Alunos
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var alunos =  _context.GetAlunoById(id);
             if (alunos == null)
             {
                 return NotFound();
@@ -137,17 +122,12 @@ namespace CadastroAluno.Controllers
         // POST: Alunos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public  IActionResult DeleteConfirmed(int id)
         {
-            var alunos = await _context.Alunos.FindAsync(id);
-            _context.Alunos.Remove(alunos);
-            await _context.SaveChangesAsync();
+            var alunos =  _context.GetAlunoById(id);
+            _context.DeleteAluno(alunos.Id);          
             return RedirectToAction(nameof(Index));
         }
-
-        private bool AlunosExists(int id)
-        {
-            return _context.Alunos.Any(e => e.Id == id);
-        }
+       
     }
 }

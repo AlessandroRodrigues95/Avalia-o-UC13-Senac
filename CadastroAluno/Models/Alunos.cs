@@ -30,5 +30,10 @@ namespace CadastroAluno.Models
         {
             Media = novaMedia;
         }
+
+        internal void AtualizaDados(string nome, double media)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
