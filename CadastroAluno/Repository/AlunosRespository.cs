@@ -45,7 +45,7 @@ namespace CadastroAluno.Repository
 
         public int UpdateAluno(int? id, Alunos alunosAlterado)
         {
-             var aluno = _context.Alunos.FirstOrDefault(c => c.Id == id);
+            var aluno = _context.Alunos.FirstOrDefault(c => c.Id == id);
 
             if (aluno == null)
                 return 0;
@@ -53,9 +53,9 @@ namespace CadastroAluno.Repository
             aluno.AtualizaDados(alunosAlterado.Nome, alunosAlterado.Media);
 
             _context.Entry(aluno).State = EntityState.Modified;
-            return  _context.SaveChanges();
+            return _context.SaveChanges();
 
-           
+
         }
         public void DeleteAluno(int? id)
         {
@@ -64,6 +64,6 @@ namespace CadastroAluno.Repository
             _context.Alunos.Remove(aluno);
             _context.SaveChanges();
         }
-
     }
 }
+    

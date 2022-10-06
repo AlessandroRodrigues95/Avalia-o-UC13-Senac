@@ -10,6 +10,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using CadastroAluno.Data;
+using CadastroAluno.Contracts;
+using CadastroAluno.Repository;
 
 namespace CadastroAluno
 {
@@ -26,7 +28,7 @@ namespace CadastroAluno
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-
+            services.AddScoped<IAlunosRepository, AlunosRespository>();
             services.AddDbContext<CadastroAlunoContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("CadastroAlunoContext")));
         }
@@ -55,7 +57,7 @@ namespace CadastroAluno
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Alunos}/{action=Index}/{id?}");
             });
         }
     }
