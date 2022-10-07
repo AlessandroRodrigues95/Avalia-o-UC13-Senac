@@ -31,13 +31,13 @@ namespace CadastroAluno.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return BadRequest();
             }
 
             var alunos = _context.GetAlunoById(id);
             if (alunos == null)
             {
-                return NotFound();
+                return BadRequest   ();
             }
 
             return View(alunos);
