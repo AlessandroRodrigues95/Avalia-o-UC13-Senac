@@ -12,7 +12,7 @@ namespace CadastroAluno.Contracts
 
         Alunos GetAlunoById(int? id);
 
-        Alunos AddAluno(Alunos cliente);
+        Alunos AddAluno(Alunos alunos);
 
        int UpdateAluno(int? id, Alunos alunosAlterado);
 
